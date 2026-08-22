@@ -15,7 +15,7 @@ import {
   Trophy,
 } from "lucide-react";
 
-import "./Martian.css";
+import "./App.css";
 
 /* =========================================
    POOKALAM SCORING
@@ -464,67 +464,6 @@ function getSadyaTitle(score) {
    APP
 ========================================= */
 
-
-const VALLAM_DIFFICULTIES = {
-  medium: {
-    label: "MEDIUM",
-    speedMultiplier: 0.95,
-    laneMin: 1700,
-    laneMax: 2600,
-    boostAwareness: 0.35,
-  },
-  hard: {
-    label: "HARD",
-    speedMultiplier: 1.05,
-    laneMin: 1050,
-    laneMax: 1750,
-    boostAwareness: 0.7,
-  },
-  extreme: {
-    label: "EXTREME",
-    speedMultiplier: 1.15,
-    laneMin: 700,
-    laneMax: 1250,
-    boostAwareness: 1,
-  },
-};
-
-const BOOST_TYPES = {
-  speed: {
-    label: "SPEED",
-    icon: "⚡",
-    color: "gold",
-  },
-  shield: {
-    label: "SHIELD",
-    icon: "🛡️",
-    color: "cyan",
-  },
-  magnet: {
-    label: "MAGNET",
-    icon: "🧲",
-    color: "violet",
-  },
-  overdrive: {
-    label: "OVERDRIVE",
-    icon: "🚀",
-    color: "red",
-  },
-};
-
-function createDynamicMeteors() {
-  const lanes = [0, 1, 2, 3, 4];
-
-  return Array.from({ length: 9 }, (_, index) => ({
-    id: index + 1,
-    progress: 12 + index * 9 + Math.random() * 6,
-    lane: lanes[Math.floor(Math.random() * lanes.length)],
-    driftDir: Math.random() > 0.5 ? 1 : -1,
-    nextDrift: Date.now() + 900 + Math.random() * 1800,
-    icon: index % 3 === 0 ? "☄" : index % 3 === 1 ? "✦" : "◈",
-  }));
-}
-
 function App() {
   const [entered, setEntered] =
     useState(false);
@@ -598,9 +537,9 @@ function App() {
 
   const [vallamAIs, setVallamAIs] =
     useState([
-      { id: 1, name: "Neo Malabar", lane: 0, progress: 0, speed: 0.56, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
-      { id: 2, name: "Vajra Varma", lane: 1, progress: 0, speed: 0.62, nextLaneChange: 0, direction: -1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
-      { id: 3, name: "Keralon Prime", lane: 3, progress: 0, speed: 0.59, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
+      { id: 1, name: "Neo Malabar", lane: 0, progress: 0, speed: 0.56, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
+      { id: 2, name: "Vajra Varma", lane: 1, progress: 0, speed: 0.62, nextLaneChange: 0, direction: -1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
+      { id: 3, name: "Keralon Prime", lane: 3, progress: 0, speed: 0.59, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
     ]);
 
   const [vallamSpeed, setVallamSpeed] =
@@ -618,26 +557,14 @@ function App() {
   const [vallamHit, setVallamHit] =
     useState(false);
 
-  const [vallamDifficulty, setVallamDifficulty] =
-    useState("hard");
-
-  const [vallamActiveBoost, setVallamActiveBoost] =
-    useState(null);
-
-  const [vallamShield, setVallamShield] =
-    useState(0);
-
-  const [vallamMeteors, setVallamMeteors] =
-    useState(() => createDynamicMeteors());
-
   /* Phase 6.3 — Boosts & Combo */
 
   const initialBoosts = [
-    { id: 1, progress: 18, lane: 1, type: "speed", collected: false },
-    { id: 2, progress: 35, lane: 3, type: "shield", collected: false },
-    { id: 3, progress: 52, lane: 0, type: "magnet", collected: false },
-    { id: 4, progress: 69, lane: 4, type: "overdrive", collected: false },
-    { id: 5, progress: 84, lane: 2, type: "speed", collected: false },
+    { id: 1, progress: 18, lane: 1, collected: false },
+    { id: 2, progress: 35, lane: 3, collected: false },
+    { id: 3, progress: 52, lane: 0, collected: false },
+    { id: 4, progress: 69, lane: 4, collected: false },
+    { id: 5, progress: 84, lane: 2, collected: false },
   ];
 
   const [vallamScore, setVallamScore] = useState(0);
@@ -654,14 +581,11 @@ function App() {
   const vallamLaneRef = useRef(2);
   const vallamProgressRef = useRef(0);
   const vallamOpponentRef = useRef(0);
-  const vallamActiveBoostRef = useRef(null);
-  const vallamShieldRef = useRef(0);
-  const vallamMeteorsRef = useRef(createDynamicMeteors());
 
   const vallamAIsRef = useRef([
-    { id: 1, name: "Neo Malabar", lane: 0, progress: 0, speed: 0.56, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
-    { id: 2, name: "Vajra Varma", lane: 1, progress: 0, speed: 0.62, nextLaneChange: 0, direction: -1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
-    { id: 3, name: "Keralon Prime", lane: 3, progress: 0, speed: 0.59, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
+    { id: 1, name: "Neo Malabar", lane: 0, progress: 0, speed: 0.56, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
+    { id: 2, name: "Vajra Varma", lane: 1, progress: 0, speed: 0.62, nextLaneChange: 0, direction: -1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
+    { id: 3, name: "Keralon Prime", lane: 3, progress: 0, speed: 0.59, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
   ]);
 
   const vallamSpeedRef = useRef(1);
@@ -712,107 +636,60 @@ function App() {
   useEffect(() => {
     if (!vallamStarted || vallamFinished) return;
 
-    const difficulty =
-      VALLAM_DIFFICULTIES[vallamDifficulty] ||
-      VALLAM_DIFFICULTIES.hard;
-
     const interval = setInterval(() => {
-      const now = Date.now();
+      const obstaclePositions = [
+        { progress: 25, lane: 1 },
+        { progress: 47, lane: 3 },
+        { progress: 68, lane: 2 },
+        { progress: 84, lane: 0 },
+      ];
+
       const current = vallamProgressRef.current;
-
-      /* Dynamic meteors: every race gets a new layout, and meteors
-         can drift one lane while the race is running. */
-      const updatedMeteors = vallamMeteorsRef.current.map((meteor) => {
-        if (now < meteor.nextDrift) return meteor;
-
-        const nextLane = Math.max(
-          0,
-          Math.min(4, meteor.lane + meteor.driftDir)
-        );
-
-        return {
-          ...meteor,
-          lane: nextLane,
-          driftDir:
-            nextLane === 0
-              ? 1
-              : nextLane === 4
-              ? -1
-              : Math.random() > 0.5
-              ? 1
-              : -1,
-          nextDrift: now + 1100 + Math.random() * 1800,
-        };
-      });
-
-      vallamMeteorsRef.current = updatedMeteors;
-      setVallamMeteors(updatedMeteors);
-
-      const activePlayerBoost = vallamActiveBoostRef.current;
-      const playerMultiplier =
-        activePlayerBoost === "overdrive"
-          ? 2.25
-          : activePlayerBoost === "speed"
-          ? 1.8
-          : 1;
+      const boostMultiplier =
+        vallamBoostRef.current > 0 ? 1.8 : 1;
 
       const next = Math.min(
         100,
         current +
           0.75 *
             vallamSpeedRef.current *
-            playerMultiplier
+            boostMultiplier
       );
 
-      /* Meteor collision. Shield blocks the first hit. */
-      const collision = updatedMeteors.some(
-        (meteor) =>
-          current < meteor.progress &&
-          next >= meteor.progress &&
-          vallamLaneRef.current === meteor.lane
+      const collision = obstaclePositions.some(
+        (obstacle) =>
+          current < obstacle.progress &&
+          next >= obstacle.progress &&
+          vallamLaneRef.current === obstacle.lane
       );
 
       if (collision) {
-        if (vallamShieldRef.current > 0) {
-          vallamShieldRef.current = 0;
-          setVallamShield(0);
-          setVallamActiveBoost(null);
-          vallamActiveBoostRef.current = null;
-          vallamScoreRef.current += 75;
-          setVallamScore(vallamScoreRef.current);
-        } else {
-          setVallamHit(true);
-          setVallamSpeed(0.45);
-          vallamSpeedRef.current = 0.45;
-          vallamComboRef.current = 0;
-          setVallamCombo(0);
+        setVallamHit(true);
+        setVallamSpeed(0.45);
+        vallamSpeedRef.current = 0.45;
+        vallamComboRef.current = 0;
+        setVallamCombo(0);
 
-          setTimeout(() => {
-            setVallamHit(false);
-            setVallamSpeed(1);
-            vallamSpeedRef.current = 1;
-          }, 700);
-        }
+        setTimeout(() => {
+          setVallamHit(false);
+          setVallamSpeed(1);
+          vallamSpeedRef.current = 1;
+        }, 700);
       }
 
-      /* Magnet automatically pulls in a nearby boost. */
-      const magnetActive =
-        vallamActiveBoostRef.current === "magnet";
+      /* BOOST COLLECTION
+         Player OR AI can collect a boost.
+         The first racer to reach it claims it. */
 
       const boostClaims = new Map();
 
       vallamBoostsRef.current.forEach((boost) => {
         if (boost.collected) return;
 
-        const sameLane =
-          vallamLaneRef.current === boost.lane;
-
         const playerReached =
-          (sameLane &&
-            current < boost.progress &&
-            next >= boost.progress) ||
-          (magnetActive &&
-            Math.abs(boost.progress - current) < 9);
+          current < boost.progress &&
+          next >= boost.progress &&
+          vallamLaneRef.current === boost.lane;
 
         const aiReached = vallamAIsRef.current
           .filter((bot) => bot.lane === boost.lane)
@@ -837,29 +714,14 @@ function App() {
             const newCombo =
               vallamComboRef.current + 1;
             const multiplier = Math.min(5, newCombo);
-            const type = boost.type || "speed";
 
             vallamComboRef.current = newCombo;
-            vallamScoreRef.current +=
-              100 * multiplier;
+            vallamScoreRef.current += 100 * multiplier;
+            vallamBoostRef.current = 100;
 
             setVallamCombo(newCombo);
             setVallamScore(vallamScoreRef.current);
-
-            if (type === "shield") {
-              vallamShieldRef.current = 1;
-              setVallamShield(1);
-              setVallamActiveBoost("shield");
-              vallamActiveBoostRef.current = "shield";
-            } else {
-              const duration =
-                type === "overdrive" ? 65 : 100;
-
-              vallamBoostRef.current = duration;
-              setVallamBoost(duration);
-              setVallamActiveBoost(type);
-              vallamActiveBoostRef.current = type;
-            }
+            setVallamBoost(100);
           }
 
           return {
@@ -871,61 +733,46 @@ function App() {
           };
         });
 
-      /* AI boost types + difficulty. */
-      const boostedAIs = vallamAIsRef.current.map((bot) => {
-        const collectedBoost = updatedBoosts.find(
-          (boost) =>
-            boost.collected &&
-            boost.collectedBy === "ai" &&
-            boost.collectedByBot === bot.id &&
-            !(bot.boostedBy || []).includes(boost.id)
-        );
+      /* AI boost = temporary 1.8x speed */
+      const boostedAIs =
+        vallamAIsRef.current.map((bot) => {
+          const collectedBoost = updatedBoosts.find(
+            (boost) =>
+              boost.collected &&
+              boost.collectedBy === "ai" &&
+              boost.collectedByBot === bot.id &&
+              !(bot.boostedBy || []).includes(boost.id)
+          );
 
-        if (collectedBoost) {
-          const type = collectedBoost.type || "speed";
+          if (collectedBoost) {
+            return {
+              ...bot,
+              boostMultiplier: 1.8,
+              boostTimer: 100,
+              boostedBy: [
+                ...(bot.boostedBy || []),
+                collectedBoost.id,
+              ],
+            };
+          }
+
+          const remaining =
+            Math.max(0, (bot.boostTimer || 0) - 1);
 
           return {
             ...bot,
-            activeBoost: type,
+            boostTimer: remaining,
             boostMultiplier:
-              type === "overdrive"
-                ? 2.1
-                : type === "speed"
-                ? 1.75
-                : 1,
-            boostTimer:
-              type === "shield" ? 0 : 100,
-            shield:
-              type === "shield" ? 1 : bot.shield || 0,
-            boostedBy: [
-              ...(bot.boostedBy || []),
-              collectedBoost.id,
-            ],
+              remaining > 0 ? 1.8 : 1,
           };
-        }
-
-        const remaining = Math.max(
-          0,
-          (bot.boostTimer || 0) - 1
-        );
-
-        return {
-          ...bot,
-          boostTimer: remaining,
-          boostMultiplier:
-            remaining > 0
-              ? bot.boostMultiplier || 1.75
-              : 1,
-          activeBoost:
-            remaining > 0 ? bot.activeBoost : null,
-        };
-      });
+        });
 
       vallamBoostsRef.current = updatedBoosts;
       setVallamBoosts(updatedBoosts);
 
       vallamAIsRef.current = boostedAIs;
       setVallamAIs(boostedAIs);
+      setVallamBoosts(updatedBoosts);
 
       if (vallamBoostRef.current > 0) {
         vallamBoostRef.current = Math.max(
@@ -933,14 +780,10 @@ function App() {
           vallamBoostRef.current - 2.5
         );
         setVallamBoost(vallamBoostRef.current);
-
-        if (vallamBoostRef.current === 0) {
-          setVallamActiveBoost(null);
-          vallamActiveBoostRef.current = null;
-        }
       }
 
-      /* AI CREW — difficulty changes speed, reaction time and lane choice. */
+      /* AI CREW */
+      const now = Date.now();
       const currentAIs = vallamAIsRef.current;
 
       const updatedAIs = currentAIs.map((bot) => {
@@ -952,27 +795,7 @@ function App() {
             .filter((other) => other.id !== bot.id)
             .map((other) => other.lane);
 
-          const nearbyBoosts = vallamBoostsRef.current
-            .filter(
-              (boost) =>
-                !boost.collected &&
-                boost.progress > bot.progress &&
-                boost.progress - bot.progress < 22
-            )
-            .sort(
-              (a, b) =>
-                a.progress - b.progress
-            );
-
-          const dangerousLanes = updatedMeteors
-            .filter(
-              (meteor) =>
-                meteor.progress > bot.progress &&
-                meteor.progress - bot.progress < 18
-            )
-            .map((meteor) => meteor.lane);
-
-          let candidates = [
+          const candidates = [
             lane - 1,
             lane + 1,
           ].filter(
@@ -982,63 +805,32 @@ function App() {
               !otherLanes.includes(value)
           );
 
-          /* Hard/Extreme bots actively seek boosts and avoid meteors. */
-          if (difficulty.boostAwareness > 0) {
-            const targetBoost = nearbyBoosts.find(
-              (boost) =>
-                Math.random() <
-                difficulty.boostAwareness
-            );
-
-            if (targetBoost) {
-              const towardBoost = [
-                targetBoost.lane,
-                targetBoost.lane - 1,
-                targetBoost.lane + 1,
-              ].find(
-                (value) =>
-                  value >= 0 &&
-                  value <= 4 &&
-                  !otherLanes.includes(value)
-              );
-
-              if (towardBoost !== undefined) {
-                lane = towardBoost;
-              }
-            }
-          }
-
-          if (
-            lane === bot.lane &&
-            dangerousLanes.includes(lane)
-          ) {
-            const safe = candidates.filter(
-              (value) =>
-                !dangerousLanes.includes(value)
-            );
-            if (safe.length) candidates = safe;
-            if (candidates.length) {
-              lane =
-                candidates[
-                  Math.floor(
-                    Math.random() * candidates.length
-                  )
-                ];
-            }
-          } else if (lane === bot.lane && candidates.length) {
+          if (candidates.length > 0) {
             lane =
               candidates[
                 Math.floor(
                   Math.random() * candidates.length
                 )
               ];
+          } else {
+            const freeLanes = [0, 1, 2, 3, 4].filter(
+              (value) =>
+                value !== lane &&
+                !otherLanes.includes(value)
+            );
+
+            if (freeLanes.length > 0) {
+              lane =
+                freeLanes[
+                  Math.floor(
+                    Math.random() * freeLanes.length
+                  )
+                ];
+            }
           }
 
           nextLaneChange =
-            now +
-            difficulty.laneMin +
-            Math.random() *
-              (difficulty.laneMax - difficulty.laneMin);
+            now + 1200 + Math.random() * 1000;
         }
 
         return {
@@ -1048,7 +840,6 @@ function App() {
             100,
             bot.progress +
               bot.speed *
-                difficulty.speedMultiplier *
                 (bot.boostMultiplier || 1)
           ),
           nextLaneChange,
@@ -1097,7 +888,7 @@ function App() {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [vallamStarted, vallamFinished, vallamDifficulty]);
+  }, [vallamStarted, vallamFinished]);
 
   /* =========================================
      LOCATIONS
@@ -2264,6 +2055,13 @@ function App() {
   if (screen === "vallam") {
     const lanes = [0, 1, 2, 3, 4];
 
+    const obstacles = [
+      { progress: 25, lane: 1, icon: "☄" },
+      { progress: 47, lane: 3, icon: "☄" },
+      { progress: 68, lane: 2, icon: "☄" },
+      { progress: 84, lane: 0, icon: "☄" },
+    ];
+
     const resetVallam = () => {
       setVallamLane(2);
       vallamLaneRef.current = 2;
@@ -2273,22 +2071,14 @@ function App() {
       setVallamWon(false);
       setVallamWinnerName("");
       setVallamHit(false);
-      setVallamActiveBoost(null);
-      vallamActiveBoostRef.current = null;
-      setVallamShield(0);
-      vallamShieldRef.current = 0;
-
-      const freshMeteors = createDynamicMeteors();
-      setVallamMeteors(freshMeteors);
-      vallamMeteorsRef.current = freshMeteors;
 
       setVallamProgress(0);
       vallamProgressRef.current = 0;
 
       const resetAIs = [
-        { id: 1, name: "Neo Malabar", lane: 0, progress: 0, speed: 0.56, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
-        { id: 2, name: "Vajra Varma", lane: 1, progress: 0, speed: 0.62, nextLaneChange: 0, direction: -1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
-        { id: 3, name: "Keralon Prime", lane: 3, progress: 0, speed: 0.59, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [], activeBoost: null, shield: 0 },
+        { id: 1, name: "Neo Malabar", lane: 0, progress: 0, speed: 0.56, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
+        { id: 2, name: "Vajra Varma", lane: 1, progress: 0, speed: 0.62, nextLaneChange: 0, direction: -1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
+        { id: 3, name: "Keralon Prime", lane: 3, progress: 0, speed: 0.59, nextLaneChange: 0, direction: 1, boostMultiplier: 1, boostTimer: 0, boostedBy: [] },
       ];
 
       setVallamAIs(resetAIs);
@@ -2301,11 +2091,11 @@ function App() {
       vallamSpeedRef.current = 1;
 
       const resetBoosts = [
-        { id: 1, progress: 18, lane: 1, type: "speed", collected: false },
-        { id: 2, progress: 35, lane: 3, type: "shield", collected: false },
-        { id: 3, progress: 52, lane: 0, type: "magnet", collected: false },
-        { id: 4, progress: 69, lane: 4, type: "overdrive", collected: false },
-        { id: 5, progress: 84, lane: 2, type: "speed", collected: false },
+        { id: 1, progress: 18, lane: 1, collected: false },
+        { id: 2, progress: 35, lane: 3, collected: false },
+        { id: 3, progress: 52, lane: 0, collected: false },
+        { id: 4, progress: 69, lane: 4, collected: false },
+        { id: 5, progress: 84, lane: 2, collected: false },
       ];
 
       vallamScoreRef.current = 0;
@@ -2420,22 +2210,6 @@ function App() {
                 <span>GRAVITY</span>
                 <strong>0.38 G</strong>
               </div>
-
-              <div className="phase63-stat difficulty-stat">
-                <span>AI DIFFICULTY</span>
-                <strong>{VALLAM_DIFFICULTIES[vallamDifficulty].label}</strong>
-              </div>
-
-              <div className="phase63-stat active-boost-stat">
-                <span>ACTIVE BOOST</span>
-                <strong>
-                  {vallamActiveBoost
-                    ? BOOST_TYPES[vallamActiveBoost]?.label
-                    : vallamShield
-                    ? "SHIELD READY"
-                    : "NONE"}
-                </strong>
-              </div>
             </div>
 
             <div className="vallam-progress-track">
@@ -2487,87 +2261,96 @@ function App() {
                     0{lane + 1}
                   </span>
 
+                  {lane === vallamLane && (
+                    <div
+                      className={
+                        vallamHit
+                          ? "player-boat hit"
+                          : vallamBoost > 0
+                          ? "player-boat boosting"
+                          : "player-boat"
+                      }
+                      style={{
+                        left: `${Math.min(
+                          82,
+                          10 + vallamProgress * 0.72
+                        )}%`,
+                      }}
+                    >
+                      <span className="boat-glow"></span>
+                      <span className="boat-body">
+                        🚣
+                      </span>
+                      <small>YOU</small>
+                    </div>
+                  )}
+
                   {vallamBoosts
                     .filter(
                       (boost) =>
                         boost.lane === lane &&
                         !boost.collected
                     )
-                    .map((boost) => {
-                      const boostInfo =
-                        BOOST_TYPES[boost.type] ||
-                        BOOST_TYPES.speed;
+                    .map((boost) => (
+                      <div
+                        key={boost.id}
+                        className="vallam-boost"
+                        style={{
+                          left: `${Math.min(
+                            82,
+                            10 +
+                              boost.progress *
+                                0.72
+                          )}%`,
+                        }}
+                      >
+                        <span>⚡</span>
+                        <small>BOOST</small>
+                      </div>
+                    ))}
 
-                      return (
-                        <div
-                          key={boost.id}
-                          className={`vallam-boost boost-${boost.type}`}
-                          style={{
-                            left: `${Math.min(
-                              82,
-                              10 +
-                                boost.progress *
-                                  0.72
-                            )}%`,
-                          }}
-                          title={boostInfo.label}
-                        >
-                          <span>{boostInfo.icon}</span>
-                          <small>{boostInfo.label}</small>
-                        </div>
-                      );
-                    })}
+                  {vallamAIs
+                    .filter(
+                      (bot) => bot.lane === lane
+                    )
+                    .map((bot) => (
+                      <div
+                        key={bot.id}
+                        className={`ai-boat ai-boat-${bot.id}${
+                          bot.boostMultiplier > 1
+                            ? " ai-boosting"
+                            : ""
+                        }`}
+                        style={{
+                          left: `${Math.min(
+                            82,
+                            10 +
+                              bot.progress *
+                                0.72
+                          )}%`,
+                        }}
+                      >
+                        <span className="boat-body">
+                          🚣
+                        </span>
+                        <small>
+                          {bot.name}
+                        </small>
+                      </div>
+                    ))}
                 </div>
               ))}
 
-              {/* Boats are rendered directly on the arena so lane changes
-                  can animate smoothly instead of jumping between lane DOM nodes. */}
-              <div
-                className={
-                  vallamHit
-                    ? "player-boat hit"
-                    : vallamBoost > 0
-                    ? "player-boat boosting"
-                    : "player-boat"
-                }
-                style={{
-                  left: `${Math.min(82, 10 + vallamProgress * 0.72)}%`,
-                  top: `${10 + vallamLane * 20}%`,
-                }}
-              >
-                <span className="boat-glow"></span>
-                <span className="boat-body">🚣</span>
-                <small>YOU</small>
-              </div>
-
-              {vallamAIs.map((bot) => (
+              {obstacles.map((obstacle, index) => (
                 <div
-                  key={bot.id}
-                  className={`ai-boat ai-boat-${bot.id}${
-                    bot.boostMultiplier > 1
-                      ? " ai-boosting"
-                      : ""
-                  }`}
+                  key={index}
+                  className="meteor"
                   style={{
-                    left: `${Math.min(82, 10 + bot.progress * 0.72)}%`,
-                    top: `${10 + bot.lane * 20}%`,
+                    left: `${10 + obstacle.progress * 0.72}%`,
+                    top: `${obstacle.lane * 20 + 10}%`,
                   }}
                 >
-                  <span className="boat-body">🚣</span>
-                  <small>{bot.name}</small>
-                </div>
-              ))}
-
-              {vallamMeteors.map((meteor) => (
-                <div
-                  key={meteor.id}
-                  className="meteor dynamic-meteor"
-                  style={{
-                    left: `${Math.min(92, 8 + meteor.progress * 0.84)}%`,
-                    top: `${meteor.lane * 20 + 10}%`,
-                  }}
-                >
-                  {meteor.icon}
+                  {obstacle.icon}
                 </div>
               ))}
 
@@ -2579,21 +2362,6 @@ function App() {
                     <p>
                       Use ↑ / W and ↓ / S to change lanes.
                     </p>
-
-                    <div className="difficulty-picker">
-                      <span>AI DIFFICULTY</span>
-                      <div>
-                        {Object.entries(VALLAM_DIFFICULTIES).map(([key, config]) => (
-                          <button
-                            key={key}
-                            className={vallamDifficulty === key ? "selected" : ""}
-                            onClick={() => setVallamDifficulty(key)}
-                          >
-                            {config.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
                   </div>
                 </div>
               )}
@@ -2635,7 +2403,7 @@ function App() {
             <div className="vallam-controls">
               <div className="control-info">
                 <span>
-                  PHASE 6.4 • AI DIFFICULTY • BOOST TYPES • DYNAMIC METEORS
+                  PHASE 6.3 • BOOST & COMBO SYSTEM
                 </span>
 
                 <strong>
@@ -2651,7 +2419,8 @@ function App() {
                 </strong>
 
                 <p>
-                  Choose your AI difficulty, dodge dynamic meteors, collect different boosts and reach the finish first.
+                  Dodge meteors, collect boosts and reach the finish
+                  before the AI crew.
                 </p>
               </div>
 
