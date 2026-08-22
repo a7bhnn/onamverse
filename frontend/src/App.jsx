@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Rocket, Sparkles, Compass, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Rocket, Sparkles, Shield, ShieldAlert, ArrowRight } from 'lucide-react';
 
 const universes = [
   {
@@ -18,17 +18,17 @@ const universes = [
     buttonBg: 'bg-red-500 hover:bg-red-600 text-black',
   },
   {
-    id: 'underwater',
-    title: 'DEEP SEA SADYA',
-    subtitle: 'MARIANAS TRENCH • SECTOR 7',
-    desc: 'Gravity-defying fluid mechanics, bioluminescent floral arrays, and floating hydrodynamic feasts.',
-    badge: 'ONLINE',
-    icon: Compass,
-    color: 'from-cyan-500/20 via-blue-500/10 to-transparent',
-    borderColor: 'border-cyan-400/40 hover:border-cyan-400',
-    glow: 'hover:shadow-[0_0_40px_rgba(34,211,238,0.4)]',
-    textColor: 'text-cyan-400',
-    buttonBg: 'bg-cyan-400 hover:bg-cyan-500 text-black',
+    id: 'earth-616', // Updated ID
+    title: 'EARTH-616',
+    subtitle: 'MARVEL CINEMATIC UNIVERSE',
+    desc: 'Experience Onam in the Marvel Cinematic Universe!', // Requested caption
+    badge: 'AVENGERS ASSEMBLE',
+    icon: Shield,
+    color: 'from-amber-500/20 via-red-500/10 to-transparent',
+    borderColor: 'border-amber-400/40 hover:border-amber-400',
+    glow: 'hover:shadow-[0_0_40px_rgba(251,191,36,0.4)]',
+    textColor: 'text-amber-400',
+    buttonBg: 'bg-amber-400 hover:bg-amber-500 text-black',
   },
   {
     id: 'ghibli',
@@ -57,6 +57,7 @@ export default function App() {
       if (universeId === 'martian') {
         navigate('/martian-loading');
       } else {
+        // For Earth-616 or Ghibli, you can route them accordingly or create their screens next!
         navigate(`/${universeId}`);
       }
     }, 800);
@@ -74,7 +75,7 @@ export default function App() {
       <AnimatePresence mode="wait">
 
         {!showPortal ? (
-          /* ================= DOCTOR STRANGE PORTAL HOMEPAGE ================= */
+          /* ================= PROCEDURAL DOCTOR STRANGE PORTAL ================= */
           <motion.div
             key="intro"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -84,55 +85,55 @@ export default function App() {
             className="flex flex-col items-center justify-center text-center cursor-pointer min-h-screen w-full z-10 group relative"
             onClick={() => setShowPortal(true)}
           >
-            {/* DOCTOR STRANGE FIERY PORTAL BACKDROP */}
+            {/* PROCEDURAL FIERY SLING-RING PORTAL BACKDROP */}
             <div className="absolute flex items-center justify-center pointer-events-none z-0">
               
-              {/* Outer Spiky/Dashed Magma Ring */}
+              {/* Outer Spiky Magma Energy Ring */}
               <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
-                className="w-[320px] h-[320px] md:w-[500px] md:h-[500px] rounded-full border-[6px] border-dashed border-orange-500/70 shadow-[0_0_80px_rgba(249,115,22,0.8),inset_0_0_50px_rgba(234,88,12,0.6)] absolute"
-              />
-
-              {/* Inner Swirling Energy Ring */}
-              <motion.div
-                animate={{ rotate: -360, scale: [1, 1.05, 1] }}
+                animate={{ rotate: 360, scale: [1, 1.02, 1] }}
                 transition={{ 
-                  rotate: { repeat: Infinity, duration: 15, ease: "linear" },
-                  scale: { repeat: Infinity, duration: 4, ease: "easeInOut" }
+                  rotate: { repeat: Infinity, duration: 20, ease: "linear" },
+                  scale: { repeat: Infinity, duration: 3, ease: "easeInOut" }
                 }}
-                className="w-[280px] h-[280px] md:w-[440px] md:h-[440px] rounded-full border-4 border-yellow-500/50 shadow-[0_0_60px_rgba(234,179,8,0.7)] absolute bg-gradient-to-tr from-red-600/30 via-orange-500/20 to-yellow-500/30 backdrop-blur-sm"
+                className="w-[340px] h-[340px] md:w-[600px] md:h-[600px] rounded-full border-[8px] border-dashed border-orange-500/80 shadow-[0_0_100px_rgba(249,115,22,0.9),inset_0_0_60px_rgba(234,88,12,0.7)] absolute"
               />
 
-              {/* Universe Portal Window (Reveals Mars background graphic inside) */}
+              {/* Inner Swirling Fire Storm Ring */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
+                className="w-[300px] h-[300px] md:w-[540px] md:h-[540px] rounded-full border-4 border-yellow-400/60 shadow-[0_0_70px_rgba(234,179,8,0.8)] absolute bg-gradient-to-tr from-red-600/40 via-orange-500/30 to-yellow-400/40 blur-[1px]"
+              />
+
+              {/* Core Universe Peek-through Window */}
               <motion.div 
                 initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 0.85, scale: 1 }}
-                className="w-[240px] h-[240px] md:w-[380px] md:h-[380px] rounded-full overflow-hidden absolute shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] border-2 border-orange-400/40"
+                animate={{ opacity: 0.9, scale: 1 }}
+                className="w-[260px] h-[260px] md:w-[460px] md:h-[460px] rounded-full overflow-hidden absolute shadow-[inset_0_0_90px_rgba(0,0,0,0.95)] bg-black/60"
               >
                 <img 
                   src="/mars.png" 
-                  alt="Portal Universe View" 
+                  alt="Universe View" 
                   className="w-full h-full object-cover opacity-60 scale-125 animate-pulse filter saturate-150"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60"></div>
               </motion.div>
             </div>
 
-            {/* Content Container (Sits on top of the portal) */}
+            {/* Content Container */}
             <div className="relative z-10 flex flex-col items-center">
               <motion.div 
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-black/60 border border-orange-500/30 mb-8 backdrop-blur-md shadow-[0_0_20px_rgba(249,115,22,0.3)]"
+                className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-black/75 border border-orange-500/40 mb-8 backdrop-blur-md shadow-[0_0_20px_rgba(249,115,22,0.4)]"
               >
                 <ShieldAlert size={14} className="text-yellow-400 animate-pulse" />
                 <span className="text-xs tracking-[0.25em] text-orange-300 uppercase">Thiruvonam Interstellar Protocol</span>
               </motion.div>
 
               <motion.h1 
-                className="text-6xl md:text-9xl font-black tracking-[0.15em] uppercase mb-6 text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-orange-400 to-red-600 drop-shadow-[0_0_25px_rgba(249,115,22,0.6)]"
+                className="text-6xl md:text-9xl font-black tracking-[0.15em] uppercase mb-6 text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-orange-400 to-red-600 drop-shadow-[0_0_30px_rgba(249,115,22,0.8)]"
               >
                 Onamverse
               </motion.h1>
