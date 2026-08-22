@@ -1,125 +1,230 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Rocket, Sparkles, Compass, ShieldAlert, ArrowRight } from 'lucide-react';
 
 const universes = [
   {
     id: 'martian',
-    title: 'Martian Onam',
-    desc: 'Red dust pookkalams, dome habitats, and rover races.',
-    glow: 'hover:shadow-[0_0_30px_rgba(220,38,38,0.8)]', // Martian Red glow
-    border: 'border-red-500/50',
-    bg: "bg-[url('/assets/martian.jpg')]"
+    title: 'MARTIAN ONAM',
+    subtitle: 'COLONY 01 • 2150',
+    desc: 'Red dust pookkalams, biometric hydroponic dome feasts, and zero-gravity rover race canals.',
+    badge: 'ACTIVE PROTOCOL',
+    icon: Rocket,
+    color: 'from-red-500/20 via-orange-500/10 to-transparent',
+    borderColor: 'border-red-500/40 hover:border-red-500',
+    glow: 'hover:shadow-[0_0_40px_rgba(239,68,68,0.4)]',
+    textColor: 'text-red-500',
+    buttonBg: 'bg-red-500 hover:bg-red-600 text-black',
   },
   {
     id: 'underwater',
-    title: 'Deep Sea Sadya',
-    desc: 'Gravity-defying physics, bioluminescence, and floating feasts.',
-    glow: 'hover:shadow-[0_0_30px_rgba(34,211,238,0.6)]',
-    border: 'border-cyan-400/30',
+    title: 'DEEP SEA SADYA',
+    subtitle: 'MARIANAS TRENCH • SECTOR 7',
+    desc: 'Gravity-defying fluid mechanics, bioluminescent floral arrays, and floating hydrodynamic feasts.',
+    badge: 'ONLINE',
+    icon: Compass,
+    color: 'from-cyan-500/20 via-blue-500/10 to-transparent',
+    borderColor: 'border-cyan-400/40 hover:border-cyan-400',
+    glow: 'hover:shadow-[0_0_40px_rgba(34,211,238,0.4)]',
+    textColor: 'text-cyan-400',
+    buttonBg: 'bg-cyan-400 hover:bg-cyan-500 text-black',
   },
   {
     id: 'ghibli',
-    title: 'The Animal Forest',
-    desc: 'No humans. Just wildlife preparing the ultimate Onam.',
-    glow: 'hover:shadow-[0_0_30px_rgba(74,222,128,0.6)]',
-    border: 'border-green-400/30',
+    title: 'THE ANIMAL FOREST',
+    subtitle: 'EARTH SANCTUARY • PROTOCOL 9',
+    desc: 'Zero human footprint. Pure wildlife synchronizing the ancient harvest traditions of the woods.',
+    badge: 'STABLE',
+    icon: Sparkles,
+    color: 'from-emerald-500/20 via-green-500/10 to-transparent',
+    borderColor: 'border-emerald-400/40 hover:border-emerald-400',
+    glow: 'hover:shadow-[0_0_40px_rgba(52,211,153,0.4)]',
+    textColor: 'text-emerald-400',
+    buttonBg: 'bg-emerald-400 hover:bg-emerald-500 text-black',
   }
 ];
 
 export default function App() {
   const [showPortal, setShowPortal] = useState(false);
   const [selected, setSelected] = useState(null);
-  
-  // New state to handle the cinematic exit animation
-  const [isWarping, setIsWarping] = useState(false); 
+  const [isWarping, setIsWarping] = useState(false);
   const navigate = useNavigate();
 
-  // Custom navigation function to handle the animation delay and correct routing
   const handleEnterUniverse = (universeId) => {
-    setIsWarping(true); // Trigger the zoom/blur effect
-
+    setIsWarping(true);
     setTimeout(() => {
-      // Send Martian to the loading screen, send others to their normal routes
       if (universeId === 'martian') {
         navigate('/martian-loading');
       } else {
         navigate(`/${universeId}`);
       }
-    }, 800); // Wait 800ms for the animation to finish before actually routing
+    }, 800);
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col items-center justify-center p-8 overflow-hidden">
+    <div className="min-h-screen bg-black text-white font-mono flex flex-col items-center justify-center p-6 md:p-12 overflow-hidden relative selection:bg-orange-500 selection:text-white">
+      
+      {/* Sci-Fi Ambient Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-950/20 via-black to-black pointer-events-none"></div>
+      <div className="absolute inset-0 opacity-10 pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(circle at center, #f97316 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
+      </div>
 
       <AnimatePresence mode="wait">
 
         {!showPortal ? (
-          /* ================= INTRO SCREEN ================= */
+          /* ================= DOCTOR STRANGE PORTAL HOMEPAGE ================= */
           <motion.div
             key="intro"
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.5, filter: "blur(10px)" }} 
+            exit={{ opacity: 0, scale: 1.6, filter: "blur(15px)" }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="flex flex-col items-center justify-center cursor-pointer min-h-screen w-full"
+            className="flex flex-col items-center justify-center text-center cursor-pointer min-h-screen w-full z-10 group relative"
             onClick={() => setShowPortal(true)}
           >
-            <h1 className="text-6xl md:text-8xl font-black tracking-widest uppercase mb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-white to-cyan-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-              Onamverse
-            </h1>
-            <p className="text-xl md:text-2xl animate-pulse text-slate-400 tracking-[0.3em] uppercase">
-              Click to Choose Your Universe
-            </p>
+            {/* DOCTOR STRANGE FIERY PORTAL BACKDROP */}
+            <div className="absolute flex items-center justify-center pointer-events-none z-0">
+              
+              {/* Outer Spiky/Dashed Magma Ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+                className="w-[320px] h-[320px] md:w-[500px] md:h-[500px] rounded-full border-[6px] border-dashed border-orange-500/70 shadow-[0_0_80px_rgba(249,115,22,0.8),inset_0_0_50px_rgba(234,88,12,0.6)] absolute"
+              />
+
+              {/* Inner Swirling Energy Ring */}
+              <motion.div
+                animate={{ rotate: -360, scale: [1, 1.05, 1] }}
+                transition={{ 
+                  rotate: { repeat: Infinity, duration: 15, ease: "linear" },
+                  scale: { repeat: Infinity, duration: 4, ease: "easeInOut" }
+                }}
+                className="w-[280px] h-[280px] md:w-[440px] md:h-[440px] rounded-full border-4 border-yellow-500/50 shadow-[0_0_60px_rgba(234,179,8,0.7)] absolute bg-gradient-to-tr from-red-600/30 via-orange-500/20 to-yellow-500/30 backdrop-blur-sm"
+              />
+
+              {/* Universe Portal Window (Reveals Mars background graphic inside) */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 0.85, scale: 1 }}
+                className="w-[240px] h-[240px] md:w-[380px] md:h-[380px] rounded-full overflow-hidden absolute shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] border-2 border-orange-400/40"
+              >
+                <img 
+                  src="/mars.png" 
+                  alt="Portal Universe View" 
+                  className="w-full h-full object-cover opacity-60 scale-125 animate-pulse filter saturate-150"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60"></div>
+              </motion.div>
+            </div>
+
+            {/* Content Container (Sits on top of the portal) */}
+            <div className="relative z-10 flex flex-col items-center">
+              <motion.div 
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-black/60 border border-orange-500/30 mb-8 backdrop-blur-md shadow-[0_0_20px_rgba(249,115,22,0.3)]"
+              >
+                <ShieldAlert size={14} className="text-yellow-400 animate-pulse" />
+                <span className="text-xs tracking-[0.25em] text-orange-300 uppercase">Thiruvonam Interstellar Protocol</span>
+              </motion.div>
+
+              <motion.h1 
+                className="text-6xl md:text-9xl font-black tracking-[0.15em] uppercase mb-6 text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-orange-400 to-red-600 drop-shadow-[0_0_25px_rgba(249,115,22,0.6)]"
+              >
+                Onamverse
+              </motion.h1>
+
+              <motion.p 
+                className="text-sm md:text-base text-slate-300 tracking-[0.4em] uppercase mb-12 max-w-lg leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+              >
+                Transcending planetary bounds. Experience ancestral celebration across multiverse dimensions.
+              </motion.p>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative px-8 py-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-600 text-black font-bold tracking-[0.2em] uppercase shadow-[0_0_35px_rgba(245,158,11,0.6)] flex items-center space-x-3 group-hover:shadow-[0_0_55px_rgba(249,115,22,0.9)] transition-all duration-300"
+              >
+                <span>Initialize Portal</span>
+                <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+              </motion.div>
+            </div>
           </motion.div>
+
         ) : (
 
-          /* ================= PORTAL SCREEN ================= */
+          /* ================= CHOOSE UNIVERSE PORTAL ================= */
           <motion.div
             key="portal"
             initial={{ opacity: 0 }}
-            // When isWarping is true, run the exit animation!
-            animate={isWarping ? { opacity: 0, scale: 1.5, filter: "blur(10px)" } : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+            animate={isWarping ? { opacity: 0, scale: 1.4, filter: "blur(12px)" } : { opacity: 1, scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="w-full flex flex-col items-center"
+            className="w-full max-w-7xl flex flex-col items-center z-10 py-12"
           >
             <motion.div
-              initial={{ opacity: 0, y: -30 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center mb-16 mt-8"
+              className="text-center mb-16"
             >
-              <h2 className="text-4xl md:text-5xl font-bold tracking-wider uppercase text-white mb-2">
+              <span className="text-xs text-orange-400 tracking-[0.3em] uppercase block mb-3">Dimensional Gateway Active</span>
+              <h2 className="text-4xl md:text-6xl font-black tracking-wider uppercase text-white mb-4">
                 Choose Your Universe
               </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-cyan-400 mx-auto rounded-full"></div>
+              <div className="w-32 h-1 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 mx-auto rounded-full shadow-[0_0_15px_rgba(245,158,11,0.5)]"></div>
             </motion.div>
 
-            {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
-              {universes.map((u, i) => (
-                <motion.div
-                  key={u.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.15 + 0.3, type: "spring", stiffness: 100 }}
-                  onHoverStart={() => setSelected(u.id)}
-                  onHoverEnd={() => setSelected(null)}
-                  className={`relative p-8 rounded-2xl bg-white/5 backdrop-blur-lg border ${u.border} transition-all duration-300 cursor-pointer ${u.glow} flex flex-col justify-between`}
-                >
-                  <div>
-                    <h3 className="text-2xl font-bold mb-3">{u.title}</h3>
-                    <p className="text-slate-300 mb-8 min-h-[80px] leading-relaxed">{u.desc}</p>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+              {universes.map((u, i) => {
+                const IconComponent = u.icon;
+                return (
+                  <motion.div
+                    key={u.id}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.15 + 0.2, type: "spring", stiffness: 100 }}
+                    onHoverStart={() => setSelected(u.id)}
+                    onHoverEnd={() => setSelected(null)}
+                    className={`relative p-8 rounded-3xl bg-slate-900/60 backdrop-blur-xl border ${u.borderColor} transition-all duration-500 cursor-pointer ${u.glow} flex flex-col justify-between overflow-hidden group`}
+                  >
+                    <div className={`absolute inset-0 bg-gradient-to-b ${u.color} opacity-40 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none`}></div>
 
-                  <div 
-                  // Call our new custom function instead of navigating instantly
-                  onClick={() => handleEnterUniverse(u.id)}
-                  className={`w-full py-3 rounded text-center font-bold tracking-wide transition-all duration-300 ${selected === u.id ? 'bg-gradient-to-r from-orange-500 to-yellow-500 text-black shadow-[0_0_15px_rgba(250,204,21,0.6)]' : 'bg-black/50 border border-yellow-500/30 text-yellow-500'}`}
-                >
-                  Enter Universe
-                </div>
-                </motion.div>
-              ))}
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-6">
+                        <div className={`p-3 rounded-2xl bg-white/5 border border-white/10 ${u.textColor}`}>
+                          <IconComponent size={24} />
+                        </div>
+                        <span className="text-[10px] tracking-[0.2em] px-3 py-1 rounded-full bg-black/40 border border-white/10 text-slate-300">
+                          {u.badge}
+                        </span>
+                      </div>
+
+                      <span className="text-xs text-slate-400 tracking-[0.2em] block mb-1">{u.subtitle}</span>
+                      <h3 className="text-2xl md:text-3xl font-black tracking-wide mb-4 text-white group-hover:text-yellow-400 transition-colors">
+                        {u.title}
+                      </h3>
+
+                      <p className="text-slate-300 text-sm md:text-base mb-8 leading-relaxed min-h-[72px]">
+                        {u.desc}
+                      </p>
+                    </div>
+
+                    <div 
+                      onClick={() => handleEnterUniverse(u.id)}
+                      className={`relative z-10 w-full py-4 rounded-xl text-center font-bold tracking-[0.15em] uppercase transition-all duration-300 flex items-center justify-center space-x-2 ${
+                        selected === u.id 
+                          ? `${u.buttonBg} shadow-[0_0_20px_rgba(255,255,255,0.4)] scale-[1.02]` 
+                          : 'bg-black/60 border border-white/10 text-white hover:border-white/30'
+                      }`}
+                    >
+                      <span>Initialize Link</span>
+                      <ArrowRight size={16} />
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         )}
