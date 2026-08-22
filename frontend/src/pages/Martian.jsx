@@ -511,6 +511,72 @@ const BOOST_TYPES = {
   },
 };
 
+const ACHIEVEMENTS = [
+  {
+    id: "first-bloom",
+    icon: "🌱",
+    title: "FIRST BLOOM",
+    description: "Place your first flower in the Pookalam.",
+    requirement: "Place 1 flower",
+  },
+  {
+    id: "master-flowers",
+    icon: "🌺",
+    title: "MASTER OF FLOWERS",
+    description: "Create a perfect Pookalam.",
+    requirement: "Reach 100% Pookalam harmony",
+  },
+  {
+    id: "sadya-architect",
+    icon: "🍛",
+    title: "SADYA ARCHITECT",
+    description: "Complete a balanced Martian Sadya.",
+    requirement: "Complete the Sadya",
+  },
+  {
+    id: "royal-connection",
+    icon: "👑",
+    title: "ROYAL CONNECTION",
+    description: "Complete your transmission with Mahabali.",
+    requirement: "Complete the royal transmission",
+  },
+  {
+    id: "vallam-victor",
+    icon: "🚣",
+    title: "VALLAM VICTOR",
+    description: "Defeat the Royal AI crew in Vallam Kali.",
+    requirement: "Win a race",
+  },
+  {
+    id: "boost-master",
+    icon: "⚡",
+    title: "BOOST MASTER",
+    description: "Collect every boost type in a single race.",
+    requirement: "Speed + Shield + Magnet + Overdrive",
+  },
+  {
+    id: "meteor-dodger",
+    icon: "☄️",
+    title: "METEOR DODGER",
+    description: "Win a Vallam Kali race without taking a meteor hit.",
+    requirement: "Win with 0 meteor hits",
+  },
+  {
+    id: "martian-onam",
+    icon: "🪐",
+    title: "MARTIAN ONAM",
+    description: "Complete all four festival activities.",
+    requirement: "Complete Pookalam + Sadya + Mahabali + Vallam",
+  },
+  {
+    id: "thiruvonam-champion",
+    icon: "🏆",
+    title: "THIRUVONAM CHAMPION",
+    description: "Raise the colony Harmony Index to 90% or higher.",
+    requirement: "Reach 90% Harmony",
+  },
+];
+
 function createDynamicMeteors() {
   const lanes = [0, 1, 2, 3, 4];
 
@@ -534,6 +600,91 @@ function Martian() {
   const [selectedLocation,
     setSelectedLocation] =
     useState(null);
+
+  /* =========================================
+     PHASE 7.1 — GLOBAL HARMONY PROGRESS
+  ========================================= */
+
+  const [globalProgress, setGlobalProgress] =
+    useState({
+      pookalam: 0,
+      sadya: 0,
+      mahabali: 0,
+      vallam: 0,
+    });
+
+  const harmonyIndex = Math.round(
+    (
+      globalProgress.pookalam +
+      globalProgress.sadya +
+      globalProgress.mahabali +
+      globalProgress.vallam
+    ) / 4
+  );
+
+  const updateGlobalProgress = (
+    activity,
+    value
+  ) => {
+    setGlobalProgress((previous) => ({
+      ...previous,
+      [activity]: Math.max(
+        previous[activity],
+        Math.min(100, Math.round(value))
+      ),
+    }));
+  };
+
+  /* =========================================
+     PHASE 7.2 — ACHIEVEMENTS & MILESTONES
+  ========================================= */
+
+  const [unlockedAchievements, setUnlockedAchievements] =
+    useState(() => {
+      try {
+        const saved = localStorage.getItem("onam2150-achievements");
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    });
+
+  const unlockedAchievementsRef =
+    useRef(unlockedAchievements);
+
+  useEffect(() => {
+    unlockedAchievementsRef.current =
+      unlockedAchievements;
+
+    localStorage.setItem(
+      "onam2150-achievements",
+      JSON.stringify(unlockedAchievements)
+    );
+  }, [unlockedAchievements]);
+
+  const [vallamCollectedBoostTypes,
+    setVallamCollectedBoostTypes] =
+    useState([]);
+
+  const [vallamHitCount,
+    setVallamHitCount] =
+    useState(0);
+
+  const unlockAchievement = (id) => {
+    if (
+      unlockedAchievementsRef.current.includes(id)
+    ) {
+      return;
+    }
+
+    const updated = [
+      ...unlockedAchievementsRef.current,
+      id,
+    ];
+
+    unlockedAchievementsRef.current = updated;
+    setUnlockedAchievements(updated);
+  };
 
   /* Pookalam */
 
@@ -681,6 +832,66 @@ function Martian() {
     vallamSpeedRef.current = vallamSpeed;
   }, [vallamSpeed]);
 
+  /* Automatically unlock achievements as the player progresses. */
+  useEffect(() => {
+    if (score.flowerCount >= 1) {
+      unlockAchievement("first-bloom");
+    }
+
+    if (score.perfect || score.total >= 100) {
+      unlockAchievement("master-flowers");
+    }
+
+    if (sadyaCompleted) {
+      unlockAchievement("sadya-architect");
+    }
+
+    if (mahabaliComplete) {
+      unlockAchievement("royal-connection");
+    }
+
+    if (vallamWon) {
+      unlockAchievement("vallam-victor");
+    }
+
+    if (
+      vallamCollectedBoostTypes.length === 4
+    ) {
+      unlockAchievement("boost-master");
+    }
+
+    if (
+      vallamWon &&
+      vallamHitCount === 0
+    ) {
+      unlockAchievement("meteor-dodger");
+    }
+
+    if (
+      completed &&
+      sadyaCompleted &&
+      mahabaliComplete &&
+      vallamWon
+    ) {
+      unlockAchievement("martian-onam");
+    }
+
+    if (harmonyIndex >= 90) {
+      unlockAchievement("thiruvonam-champion");
+    }
+  }, [
+    score.flowerCount,
+    score.perfect,
+    score.total,
+    sadyaCompleted,
+    mahabaliComplete,
+    vallamWon,
+    vallamCollectedBoostTypes,
+    vallamHitCount,
+    completed,
+    harmonyIndex,
+  ]);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (!vallamStarted || vallamFinished) return;
@@ -781,6 +992,7 @@ function Martian() {
           setVallamScore(vallamScoreRef.current);
         } else {
           setVallamHit(true);
+          setVallamHitCount((count) => count + 1);
           setVallamSpeed(0.45);
           vallamSpeedRef.current = 0.45;
           vallamComboRef.current = 0;
@@ -837,6 +1049,12 @@ function Martian() {
               vallamComboRef.current + 1;
             const multiplier = Math.min(5, newCombo);
             const type = boost.type || "speed";
+
+            setVallamCollectedBoostTypes((types) =>
+              types.includes(type)
+                ? types
+                : [...types, type]
+            );
 
             vallamComboRef.current = newCombo;
             vallamScoreRef.current +=
@@ -1092,6 +1310,27 @@ function Martian() {
 
         setVallamWon(playerWon);
         setVallamFinished(true);
+
+        const vallamPerformance = playerWon
+          ? Math.min(
+              100,
+              70 +
+                Math.round(
+                  vallamScoreRef.current / 100
+                )
+            )
+          : Math.min(
+              65,
+              40 +
+                Math.round(
+                  vallamScoreRef.current / 150
+                )
+            );
+
+        updateGlobalProgress(
+          "vallam",
+          vallamPerformance
+        );
       }
     }, 100);
 
@@ -1294,6 +1533,10 @@ function Martian() {
     }
 
     setCompleted(true);
+    updateGlobalProgress(
+      "pookalam",
+      score.total
+    );
   };
 
   /* =========================================
@@ -1345,6 +1588,10 @@ function Martian() {
     }
 
     setSadyaCompleted(true);
+    updateGlobalProgress(
+      "sadya",
+      sadyaScore.total
+    );
   };
 
   /* =========================================
@@ -1364,6 +1611,10 @@ function Martian() {
   const finishMahabali =
     () => {
       setMahabaliComplete(true);
+      updateGlobalProgress(
+        "mahabali",
+        100
+      );
     };
 
   /* =========================================
@@ -1437,6 +1688,127 @@ function Martian() {
 
         </main>
 
+      </div>
+    );
+  }
+
+  /* =========================================
+     PHASE 7.2 — ACHIEVEMENTS SCREEN
+  ========================================= */
+
+  if (screen === "achievements") {
+    return (
+      <div className="app">
+        <main className="achievements-screen">
+          <div className="achievements-background"></div>
+
+          <header className="achievements-header">
+            <button
+              className="return-button"
+              onClick={() => setScreen("colony")}
+            >
+              <ArrowLeft size={18} />
+              BACK TO COLONY
+            </button>
+
+            <div className="achievements-title">
+              <span>THIRUVONAM PROTOCOL • MARS COLONY 01</span>
+              <h1>ACHIEVEMENTS</h1>
+              <p>EVERY TRADITION LEAVES A MARK</p>
+            </div>
+
+            <div className="achievements-total">
+              <Trophy size={18} />
+              <div>
+                <span>UNLOCKED</span>
+                <strong>
+                  {unlockedAchievements.length}/{ACHIEVEMENTS.length}
+                </strong>
+              </div>
+            </div>
+          </header>
+
+          <section className="achievements-main">
+            <div className="achievements-intro">
+              <span>PHASE 7.2 • MILESTONE SYSTEM</span>
+              <h2>YOUR MARTIAN ONAM JOURNEY</h2>
+              <p>
+                Complete festival activities, master the challenges
+                and unlock milestones that persist between sessions.
+              </p>
+            </div>
+
+            <div className="achievement-progress-track">
+              <div
+                className="achievement-progress-fill"
+                style={{
+                  width: `${(unlockedAchievements.length / ACHIEVEMENTS.length) * 100}%`,
+                }}
+              />
+            </div>
+
+            <div className="achievement-grid">
+              {ACHIEVEMENTS.map((achievement) => {
+                const unlocked =
+                  unlockedAchievements.includes(
+                    achievement.id
+                  );
+
+                return (
+                  <article
+                    key={achievement.id}
+                    className={
+                      unlocked
+                        ? "achievement-card unlocked"
+                        : "achievement-card locked"
+                    }
+                  >
+                    <div className="achievement-icon">
+                      {unlocked ? achievement.icon : "🔒"}
+                    </div>
+
+                    <div className="achievement-content">
+                      <span>
+                        {unlocked
+                          ? "UNLOCKED"
+                          : "LOCKED"}
+                      </span>
+
+                      <h3>
+                        {achievement.title}
+                      </h3>
+
+                      <p>
+                        {achievement.description}
+                      </p>
+
+                      <small>
+                        {achievement.requirement}
+                      </small>
+                    </div>
+
+                    {unlocked && (
+                      <div className="achievement-check">
+                        ✓
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+
+          <footer className="achievements-footer">
+            <span>
+              ACHIEVEMENTS ARE SAVED LOCALLY
+            </span>
+            <span>
+              {unlockedAchievements.length === ACHIEVEMENTS.length
+                ? "THIRUVONAM COMPLETE"
+                : "MORE MILESTONES AWAIT"}
+            </span>
+          </footer>
+        </main>
       </div>
     );
   }
@@ -2272,6 +2644,8 @@ function Martian() {
       setVallamWon(false);
       setVallamWinnerName("");
       setVallamHit(false);
+      setVallamHitCount(0);
+      setVallamCollectedBoostTypes([]);
       setVallamActiveBoost(null);
       vallamActiveBoostRef.current = null;
       setVallamShield(0);
@@ -3102,6 +3476,73 @@ function Martian() {
             </p>
 
           </div>
+
+          <section className="harmony-dashboard">
+            <div className="harmony-dashboard-header">
+              <div>
+                <span>MARS 2150 • COLONY HARMONY SYSTEM</span>
+                <h3>HARMONY INDEX</h3>
+              </div>
+
+              <div className="harmony-total">
+                <strong>{harmonyIndex}%</strong>
+                <small>
+                  {harmonyIndex >= 90
+                    ? "EXCEPTIONAL"
+                    : harmonyIndex >= 75
+                    ? "THRIVING"
+                    : harmonyIndex >= 50
+                    ? "STABLE"
+                    : "AWAITING FESTIVAL"}
+                </small>
+              </div>
+            </div>
+
+            <div className="harmony-progress-track">
+              <div
+                className="harmony-progress-fill"
+                style={{
+                  width: `${harmonyIndex}%`,
+                }}
+              />
+            </div>
+
+            <div className="harmony-activities">
+              <div className="harmony-activity">
+                <span>🌸 POOKALAM</span>
+                <strong>{globalProgress.pookalam}%</strong>
+              </div>
+
+              <div className="harmony-activity">
+                <span>🍛 SADYA</span>
+                <strong>{globalProgress.sadya}%</strong>
+              </div>
+
+              <div className="harmony-activity">
+                <span>👑 MAHABALI</span>
+                <strong>{globalProgress.mahabali}%</strong>
+              </div>
+
+              <div className="harmony-activity">
+                <span>🚣 VALLAM KALI</span>
+                <strong>{globalProgress.vallam}%</strong>
+              </div>
+            </div>
+          </section>
+
+          <button
+            className="achievements-button"
+            onClick={() => setScreen("achievements")}
+          >
+            <Trophy size={17} />
+            <span>
+              <strong>ACHIEVEMENTS</strong>
+              <small>
+                {unlockedAchievements.length} / {ACHIEVEMENTS.length} UNLOCKED
+              </small>
+            </span>
+            <ChevronRight size={17} />
+          </button>
 
           <div className="location-grid">
 
