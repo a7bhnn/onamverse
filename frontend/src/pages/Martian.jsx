@@ -202,7 +202,7 @@ function calculateHarmony(board) {
 
   /* Composition */
 
-  let composition = 0;
+  let composition; // FIXED: ESLint warning removed
 
   if (flowerCount === 0) {
     composition = 0;
@@ -464,7 +464,6 @@ function getSadyaTitle(score) {
    APP
 ========================================= */
 
-
 const VALLAM_DIFFICULTIES = {
   medium: {
     label: "MEDIUM",
@@ -525,7 +524,7 @@ function createDynamicMeteors() {
   }));
 }
 
-function App() {
+function Martian() {
   const [entered, setEntered] =
     useState(false);
 
@@ -985,7 +984,7 @@ function App() {
           /* Hard/Extreme bots actively seek boosts and avoid meteors. */
           if (difficulty.boostAwareness > 0) {
             const targetBoost = nearbyBoosts.find(
-              (boost) =>
+              () =>
                 Math.random() <
                 difficulty.boostAwareness
             );
@@ -3318,4 +3317,4 @@ function App() {
   );
 }
 
-export default App;
+export default Martian;

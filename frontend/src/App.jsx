@@ -28,15 +28,30 @@ const universes = [
 ];
 
 export default function App() {
-  // State to track if we are on the Intro screen (false) or Portal screen (true)
   const [showPortal, setShowPortal] = useState(false);
   const [selected, setSelected] = useState(null);
+  
+  // New state to handle the cinematic exit animation
+  const [isWarping, setIsWarping] = useState(false); 
   const navigate = useNavigate();
+
+  // Custom navigation function to handle the animation delay and correct routing
+  const handleEnterUniverse = (universeId) => {
+    setIsWarping(true); // Trigger the zoom/blur effect
+
+    setTimeout(() => {
+      // Send Martian to the loading screen, send others to their normal routes
+      if (universeId === 'martian') {
+        navigate('/martian-loading');
+      } else {
+        navigate(`/${universeId}`);
+      }
+    }, 800); // Wait 800ms for the animation to finish before actually routing
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col items-center justify-center p-8 overflow-hidden">
 
-      {/* AnimatePresence handles the exit animations */}
       <AnimatePresence mode="wait">
 
         {!showPortal ? (
@@ -45,7 +60,7 @@ export default function App() {
             key="intro"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.5, filter: "blur(10px)" }} // Cinematic warp-out effect
+            exit={{ opacity: 0, scale: 1.5, filter: "blur(10px)" }} 
             transition={{ duration: 0.8, ease: "easeInOut" }}
             className="flex flex-col items-center justify-center cursor-pointer min-h-screen w-full"
             onClick={() => setShowPortal(true)}
@@ -63,8 +78,9 @@ export default function App() {
           <motion.div
             key="portal"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, staggerChildren: 0.2 }}
+            // When isWarping is true, run the exit animation!
+            animate={isWarping ? { opacity: 0, scale: 1.5, filter: "blur(10px)" } : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="w-full flex flex-col items-center"
           >
             <motion.div
@@ -96,7 +112,8 @@ export default function App() {
                   </div>
 
                   <div 
-                  onClick={() => navigate(`/${u.id}`)}
+                  // Call our new custom function instead of navigating instantly
+                  onClick={() => handleEnterUniverse(u.id)}
                   className={`w-full py-3 rounded text-center font-bold tracking-wide transition-all duration-300 ${selected === u.id ? 'bg-gradient-to-r from-orange-500 to-yellow-500 text-black shadow-[0_0_15px_rgba(250,204,21,0.6)]' : 'bg-black/50 border border-yellow-500/30 text-yellow-500'}`}
                 >
                   Enter Universe
