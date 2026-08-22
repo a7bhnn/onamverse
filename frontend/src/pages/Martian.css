@@ -3541,3 +3541,75 @@ button {
   .difficulty-picker button { padding: 7px 9px; }
   .active-boost-stat { min-width: 105px !important; }
 }
+
+
+/* =========================================
+   RACER HIGHLIGHTS
+   Player = BLUE | AI = RED
+========================================= */
+
+.player-boat {
+  color: #58d9ff;
+  text-shadow:
+    0 0 6px rgba(70, 210, 255, 0.95),
+    0 0 18px rgba(70, 180, 255, 0.75);
+  filter:
+    drop-shadow(0 0 7px rgba(70, 210, 255, 0.95))
+    drop-shadow(0 0 18px rgba(40, 150, 255, 0.65));
+}
+
+.player-boat .boat-body {
+  filter:
+    drop-shadow(0 0 8px rgba(70, 220, 255, 1))
+    drop-shadow(0 0 18px rgba(40, 140, 255, 0.8));
+}
+
+.player-boat small {
+  color: #6fe4ff;
+  text-shadow: 0 0 8px rgba(70, 210, 255, 0.95);
+  font-weight: 700;
+}
+
+.player-boat .boat-glow {
+  background: rgba(45, 175, 255, 0.42);
+  box-shadow:
+    0 0 18px rgba(45, 175, 255, 0.75),
+    0 0 35px rgba(45, 125, 255, 0.5);
+}
+
+.ai-boat {
+  color: #ff5b5b;
+  text-shadow:
+    0 0 6px rgba(255, 65, 65, 0.95),
+    0 0 16px rgba(220, 35, 35, 0.75);
+  opacity: 1;
+  filter:
+    drop-shadow(0 0 7px rgba(255, 60, 60, 0.95))
+    drop-shadow(0 0 17px rgba(210, 30, 30, 0.65));
+}
+
+.ai-boat .boat-body {
+  filter:
+    drop-shadow(0 0 8px rgba(255, 70, 70, 1))
+    drop-shadow(0 0 18px rgba(205, 25, 25, 0.8));
+}
+
+.ai-boat small {
+  color: #ff6b6b;
+  text-shadow: 0 0 8px rgba(255, 60, 60, 0.95);
+  font-weight: 700;
+}
+
+/* Keep AI red even while collecting a boost */
+.ai-boat.ai-boosting {
+  filter:
+    drop-shadow(0 0 9px rgba(255, 50, 50, 1))
+    drop-shadow(0 0 22px rgba(220, 25, 25, 0.85));
+}
+
+/* Player remains blue when hit */
+.player-boat.hit {
+  filter:
+    drop-shadow(0 0 10px rgba(70, 210, 255, 1))
+    drop-shadow(0 0 22px rgba(40, 140, 255, 0.85));
+}
