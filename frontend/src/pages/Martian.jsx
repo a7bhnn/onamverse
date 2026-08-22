@@ -6,7 +6,6 @@ import {
   Utensils,
   Crown,
   Waves,
-  Home,
   Satellite,
   CircleDot,
   ArrowLeft,
@@ -202,7 +201,7 @@ function calculateHarmony(board) {
 
   /* Composition */
 
-  let composition; // FIXED: ESLint warning removed
+  let composition = 0;
 
   if (flowerCount === 0) {
     composition = 0;
@@ -464,6 +463,7 @@ function getSadyaTitle(score) {
    APP
 ========================================= */
 
+
 const VALLAM_DIFFICULTIES = {
   medium: {
     label: "MEDIUM",
@@ -590,7 +590,7 @@ function createDynamicMeteors() {
   }));
 }
 
-function Martian() {
+function App() {
   const [entered, setEntered] =
     useState(false);
 
@@ -621,6 +621,55 @@ function Martian() {
       globalProgress.vallam
     ) / 4
   );
+
+  /* =========================================
+     PHASE 7.3 — COLONY REACTIVITY
+  ========================================= */
+
+  const colonyState =
+    harmonyIndex >= 90
+      ? {
+          key: "complete",
+          label: "THIRUVONAM COMPLETE",
+          message: "The Martian colony has become a home for tradition.",
+          subtext: "Festival systems synchronized • Community harmony exceptional",
+        }
+      : harmonyIndex >= 75
+      ? {
+          key: "thriving",
+          label: "COLONY THRIVING",
+          message: "Onam is taking root across Mars.",
+          subtext: "Festival systems active • Community harmony rising",
+        }
+      : harmonyIndex >= 50
+      ? {
+          key: "stable",
+          label: "COLONY HARMONIZED",
+          message: "The colony is beginning to feel like home.",
+          subtext: "Festival systems responding • Tradition stabilized",
+        }
+      : harmonyIndex >= 25
+      ? {
+          key: "developing",
+          label: "COLONY DEVELOPING",
+          message: "The first sparks of Thiruvonam are spreading.",
+          subtext: "Festival systems initializing • More traditions await",
+        }
+      : {
+          key: "unstable",
+          label: "COLONY AWAITING FESTIVAL",
+          message: "Mars is ready for its first Martian Thiruvonam.",
+          subtext: "Festival systems dormant • Begin the celebration",
+        };
+
+  const getReactiveLocationStatus = (location) => {
+    const value = globalProgress[location.id];
+
+    if (value >= 100) return "COMPLETED";
+    if (value > 0) return "IN PROGRESS";
+    if (harmonyIndex >= 75) return "READY";
+    return location.status;
+  };
 
   const updateGlobalProgress = (
     activity,
@@ -1202,7 +1251,7 @@ function Martian() {
           /* Hard/Extreme bots actively seek boosts and avoid meteors. */
           if (difficulty.boostAwareness > 0) {
             const targetBoost = nearbyBoosts.find(
-              () =>
+              (boost) =>
                 Math.random() <
                 difficulty.boostAwareness
             );
@@ -1380,16 +1429,6 @@ function Martian() {
       description:
         "Enter the Martian waters and compete in a futuristic low-gravity Vallam Kali.",
       status: "PLAY NOW",
-    },
-
-    {
-      id: "family",
-      icon: Home,
-      title: "FAMILY HUB",
-      subtitle: "Earth Link",
-      description:
-        "Connect with families across Earth and share the Martian Thiruvonam experience.",
-      status: "COMING LATER",
     },
   ];
 
@@ -3389,13 +3428,174 @@ function Martian() {
   }
 
   /* =========================================
+     PHASE 7.4 — THIRUVONAM 2150 FINALE
+  ========================================= */
+
+  if (screen === "finale" && harmonyIndex >= 90) {
+    const finaleAchievements =
+      unlockedAchievements.length;
+
+    return (
+      <div className="app">
+        <main className="festival-finale">
+          <div className="finale-stars"></div>
+          <div className="finale-glow finale-glow-one"></div>
+          <div className="finale-glow finale-glow-two"></div>
+
+          <header className="finale-header">
+            <button
+              className="return-button"
+              onClick={() => setScreen("colony")}
+            >
+              <ArrowLeft size={18} />
+              BACK TO COLONY
+            </button>
+
+            <div className="finale-system">
+              <Sparkles size={13} />
+              THIRUVONAM PROTOCOL • FINAL CELEBRATION
+            </div>
+          </header>
+
+          <section className="finale-content">
+            <div className="finale-eyebrow">
+              MARS COLONY 01 • 08.21.2150
+            </div>
+
+            <div className="finale-emblem">
+              <div className="finale-ring finale-ring-one"></div>
+              <div className="finale-ring finale-ring-two"></div>
+              <div className="finale-lotus">🪷</div>
+            </div>
+
+            <span className="finale-kicker">
+              THE FESTIVAL HAS COME TO MARS
+            </span>
+
+            <h1>
+              THIRUVONAM
+              <br />
+              <span>2150</span>
+            </h1>
+
+            <div className="finale-complete-label">
+              <span></span>
+              COLONY FESTIVAL STATUS
+              <strong>COMPLETE</strong>
+              <span></span>
+            </div>
+
+            <p className="finale-message">
+              The traditions of Earth have found a new home among
+              the stars. Your choices brought the Martian colony
+              together for its first Thiruvonam.
+            </p>
+
+            <div className="finale-harmony-card">
+              <div className="finale-score-block">
+                <span>FINAL HARMONY INDEX</span>
+                <strong>{harmonyIndex}%</strong>
+                <small>EXCEPTIONAL COLONY HARMONY</small>
+              </div>
+
+              <div className="finale-score-line">
+                <div style={{ width: `${harmonyIndex}%` }}></div>
+              </div>
+
+              <div className="finale-activity-grid">
+                <div>
+                  <span>🌸 POOKALAM</span>
+                  <strong>{globalProgress.pookalam}%</strong>
+                </div>
+                <div>
+                  <span>🍛 SADYA</span>
+                  <strong>{globalProgress.sadya}%</strong>
+                </div>
+                <div>
+                  <span>👑 MAHABALI</span>
+                  <strong>{globalProgress.mahabali}%</strong>
+                </div>
+                <div>
+                  <span>🚣 VALLAM KALI</span>
+                  <strong>{globalProgress.vallam}%</strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="finale-mahabali">
+              <div className="finale-crown">👑</div>
+              <div>
+                <span>FINAL ROYAL TRANSMISSION</span>
+                <p>
+                  “Wherever people gather with love,
+                  that place becomes home.”
+                </p>
+                <small>— MAHABALI</small>
+              </div>
+            </div>
+
+            <div className="finale-stats">
+              <div>
+                <Trophy size={17} />
+                <span>
+                  <strong>{finaleAchievements}/{ACHIEVEMENTS.length}</strong>
+                  ACHIEVEMENTS
+                </span>
+              </div>
+
+              <div>
+                <Flower2 size={17} />
+                <span>
+                  <strong>4</strong>
+                  FESTIVAL TRADITIONS
+                </span>
+              </div>
+
+              <div>
+                <Satellite size={17} />
+                <span>
+                  <strong>STABLE</strong>
+                  COLONY STATUS
+                </span>
+              </div>
+            </div>
+
+            <div className="finale-actions">
+              <button
+                className="finale-primary-button"
+                onClick={() => setScreen("colony")}
+              >
+                <ArrowLeft size={17} />
+                RETURN TO COLONY
+              </button>
+
+              <button
+                className="finale-secondary-button"
+                onClick={() => setScreen("achievements")}
+              >
+                <Trophy size={16} />
+                VIEW ACHIEVEMENTS
+                <ChevronRight size={16} />
+              </button>
+            </div>
+
+            <p className="finale-footer-quote">
+              MARS COLONY 01 • ONAM LIVES BEYOND EARTH
+            </p>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  /* =========================================
      MARS COLONY
   ========================================= */
 
   return (
     <div className="app">
 
-      <main className="colony">
+      <main className={`colony colony-${colonyState.key}`}>
 
         <div className="colony-grid"></div>
 
@@ -3530,6 +3730,23 @@ function Martian() {
             </div>
           </section>
 
+          <section className="colony-reactivity-panel">
+            <div className="colony-reactivity-indicator">
+              <span className="reactivity-pulse"></span>
+              COLONY RESPONSE SYSTEM
+            </div>
+
+            <div className="colony-reactivity-content">
+              <div>
+                <span>COLONY STATUS</span>
+                <strong>{colonyState.label}</strong>
+              </div>
+
+              <p>{colonyState.message}</p>
+              <small>{colonyState.subtext}</small>
+            </div>
+          </section>
+
           <button
             className="achievements-button"
             onClick={() => setScreen("achievements")}
@@ -3543,6 +3760,20 @@ function Martian() {
             </span>
             <ChevronRight size={17} />
           </button>
+
+          {harmonyIndex >= 90 && (
+            <button
+              className="finale-unlock-button"
+              onClick={() => setScreen("finale")}
+            >
+              <Sparkles size={18} />
+              <span>
+                <strong>THIRUVONAM 2150 FINALE</strong>
+                <small>THE FESTIVAL IS COMPLETE • ENTER CELEBRATION</small>
+              </span>
+              <ChevronRight size={18} />
+            </button>
+          )}
 
           <div className="location-grid">
 
@@ -3613,12 +3844,6 @@ function Martian() {
                           null
                         );
 
-                      } else {
-
-                        setSelectedLocation(
-                          location.id
-                        );
-
                       }
 
                     }}
@@ -3634,7 +3859,7 @@ function Martian() {
 
                       <span className="card-status">
 
-                        {location.status}
+                        {getReactiveLocationStatus(location)}
 
                       </span>
 
@@ -3649,6 +3874,20 @@ function Martian() {
                       <span>
                         {location.subtitle}
                       </span>
+
+                      <div className="location-progress">
+                          <div>
+                            <span>COLONY CONTRIBUTION</span>
+                            <strong>{globalProgress[location.id] || 0}%</strong>
+                          </div>
+                          <div className="location-progress-track">
+                            <span
+                              style={{
+                                width: `${globalProgress[location.id] || 0}%`,
+                              }}
+                            />
+                          </div>
+                      </div>
 
                       <p>
                         {location.description}
@@ -3758,4 +3997,4 @@ function Martian() {
   );
 }
 
-export default Martian;
+export default App;
